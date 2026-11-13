@@ -1,0 +1,19 @@
+# Used when no --guidance_config is given: p(r) early + overlap late, WITHOUT the domain restraint
+# (the restraint needs an unguided reference model, so it cannot be a default).
+# The recommended setup is configs/io.yaml at the repository root. Format: see the "loss config (YAML)" comment in
+# cryoalpha/guiding/setup_guidance.py.
+#
+# Steps <-> noise (200 steps): step 100 = sigma 101 A, 130 = 18 A (blur 12), 140 = 9 A (blur 7.9),
+# 150 = 4.3 A, 155 = 2.8 A. Blur schedules: progress = 1 - blur/16.
+
+pose_loss: overlap            # drives the rigid pose fit (flip check, rotation/translation search)
+# guidance_steps: [100, 155]  # optional: guide only these steps (START <= step < END)
+
+losses:
+  - name: overlap             # Gaussian density correlation with the map
+    params: {resolution: 4.0, chunk_size: 16384}
+    schedule: {type: PartSchedule, val: 1.0, peak_start: 0.5, peak_end: 0.8, input_type: blur}   # blur 8 -> 3.2 A (steps 140-153)
+
+  - name: pr                  # pair-distance function p(r)
+    params: {resolution: 4.0, extra_blur: 3.0}
+    schedule: {type: StepSchedule, start_val: 1.0, end_val: 0.0, threshold: 0.2, input_type: blur}  # blur > 12.8 A (steps 0-127)

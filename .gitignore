@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+*.egg-info/
+build/
+dist/
+# outputs and data
+output*/
+runs/
+*.cif
+*.npz
+ranking.csv
+best_placed.pdb
+# AF3 weights not commited
+*.bin
+*.bin.zst
+af3_weights/

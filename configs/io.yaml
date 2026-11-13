@@ -1,0 +1,20 @@
+
+# The flag defaults match this setup (gradient through the denoiser, rescaled, strength 0.10).
+#
+# Fill in before use:
+#  REF_MODEL: an UNGUIDED AF3 model of the same input (e.g. seed 1, sample 0). Its *_confidences.json must be
+#             next to it: the restraint's domains and tolerances come from its PAE.
+#  chunk_size: voxels per chunk in the overlap loss; lower it (e.g. 1024) if the GPU runs out of memory.
+pose_loss: overlap
+guidance_steps: [0, 154]      # after the overlap phase: plain AF3
+
+losses:
+  - name: overlap             # shape guidance only in the late phase (and the pose fit throughout)
+    params: {resolution: 4.0, chunk_size: 4096}
+    schedule: {type: PartSchedule, val: 1.0, peak_start: 0.5, peak_end: 0.8, input_type: blur}   # blur 8 -> 3.2 A (steps 140-153)
+  - name: pr
+    params: {resolution: 4.0, extra_blur: 3.0}
+    schedule: {type: StepSchedule, start_val: 1.0, end_val: 0.0, threshold: 0.2, input_type: blur}  # blur > 12.8 A (to step 127)
+  - name: domain_integrity    # CA elastic network per PAE piece vs an unguided AF3 sample, tol = PAE; off in the overlap phase
+    params: {ref_model: /path/to/unguided_model.cif}
+    schedule: {type: PartSchedule, val: 2.0e-5, peak_start: 0.0, peak_end: 0.6, input_type: t}   # steps 0-119

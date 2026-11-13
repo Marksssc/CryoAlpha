@@ -1,0 +1,15 @@
+# L: IO with the late overlap phase extended to step 175 (blur down to ~0.5 A). Sharper picks on hinge
+# targets and more correct samples on moderate changes, but more clashes. Same flags and placeholders as io.yaml.
+pose_loss: overlap
+guidance_steps: [0, 176]      # after the overlap phase: plain AF3
+
+losses:
+  - name: overlap
+    params: {resolution: 4.0, chunk_size: 4096}
+    schedule: {type: PartSchedule, val: 1.0, peak_start: 0.70, peak_end: 0.88, input_type: t}   # steps 140-175
+  - name: pr
+    params: {resolution: 4.0, extra_blur: 3.0}
+    schedule: {type: StepSchedule, start_val: 1.0, end_val: 0.0, threshold: 0.2, input_type: blur}  # blur > 12.8 A (to step 127)
+  - name: domain_integrity
+    params: {ref_model: /path/to/unguided_model.cif}
+    schedule: {type: PartSchedule, val: 2.0e-5, peak_start: 0.0, peak_end: 0.6, input_type: t}   # steps 0-119

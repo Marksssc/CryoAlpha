@@ -124,6 +124,11 @@ samples on moderate changes, but more clashes.
   slower than unguided AF3.
 - **Not bit-reproducible on GPU.** Compare settings over many seeds, not per seed.
 
+## Acknowledgements
+
+CryoAlpha was developed during an internship in the Lindahl group at SciLifeLab, under the daily supervision of
+Samuel Eriksson Lidbrink and the overall supervision of Dr. Rebecca Howard.
+
 ## Licence
 
 Apache License 2.0 (see `LICENSE`). `cryoalpha/af3_patches/diffusion_head.py` is a modified copy of AlphaFold

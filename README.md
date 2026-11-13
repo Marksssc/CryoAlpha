@@ -28,7 +28,7 @@ methods CryoBoltz and CryoACE miss. See *Limitations* below before using it.
    are not part of this repository.
 2. **This package**, in the same Python environment:
    ```bash
-   git clone https://github.com/<user>/CryoAlpha.git
+   git clone https://github.com/Marksssc/CryoAlpha.git
    cd CryoAlpha
    pip install -e .
    ```
